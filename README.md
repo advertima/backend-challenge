@@ -114,24 +114,25 @@ content-type: application/json
 
 ## Instructions
 
+1. Fork this repository
 1. Implement your service as a Docker container in `timeline_service/`.
    * The container is expected to listen on the port 8000.
    * If you want to use a non-embedded database you need add you DB container to `docker-compose.yml`.
    * You may use the provided service templates:
       * Python, FastAPI, SQLAlchemy, SQLite:
-      ```sh
-      cp python_template/* timeline_service/
-      ```
+          ```sh
+          cp python_template/* timeline_service/
+          ```
       * TypeScript, Express, Knex, SQLite:
-      ```sh
-      cp typescript_template/* timeline_service/
-      ```
+          ```sh
+          cp typescript_template/* timeline_service/
+          ```
     But feel free to use the stack you are most comfortable with.
-2. Run the acceptance tests and make sure the tests pass.
-  ```sh
-  ./run_acceptance_tests.sh
-  ```
-3. Send your code in an archive.
+1. Run the acceptance tests and make sure the tests pass.
+    ```sh
+    ./run_acceptance_tests.sh
+    ```
+1. Send us a link to your solution
 
 ## Bonus points
 
