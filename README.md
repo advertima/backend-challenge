@@ -145,7 +145,7 @@ It is a flexible request, we expect you to make assumptions and take decisions b
 
 We suggest a maximum of 1 calendar week to execute the task with an estimated investment time of 4 to 6 hours. This can be adjusted depending on your current time availability.
 
-#### Happy solving!
+#### Happy solving and good luck!
 
 
 > **Note to the maintainers of this repo** This repo is generated from an original in Gitlab. Please do not edit this repo directly, but edit the original and then merge
