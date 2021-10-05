@@ -78,15 +78,14 @@ class TestApi(unittest.TestCase):
 
     def test_empty(self):
         """
-        A timeline cannot be constructed because the enter and exit events
-        do not have the corresponding exit and enter events
+        A timeline cannot be constructed because the exit events are missing
         """
         enter(self.start_ts, self.track_id, camera_id="1")
-        exit(self.start_ts + 30, self.track_id, camera_id="2")
+        enter(self.start_ts + 30, self.track_id, camera_id="5")
 
         resp = requests.get(API_URL + f"/timeline/{self.track_id}")
         timeline = resp.json()
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 404)
         self.assertEqual(timeline, [])
 
     def test_gap(self):
@@ -96,8 +95,8 @@ class TestApi(unittest.TestCase):
         """
         enter(self.start_ts, self.track_id, camera_id="1")
         exit(self.start_ts + 30, self.track_id, camera_id="1")
-        enter(self.start_ts + 35, self.track_id, camera_id="2")
-        exit(self.start_ts + 50, self.track_id, camera_id="2")
+        enter(self.start_ts + 35, self.track_id, camera_id="1")
+        exit(self.start_ts + 50, self.track_id, camera_id="1")
 
         resp = requests.get(API_URL + f"/timeline/{self.track_id}")
         timeline = resp.json()
@@ -115,7 +114,7 @@ class TestApi(unittest.TestCase):
             {
                 "start_ts": self.start_ts + 35,
                 "end_ts": self.start_ts + 50,
-                "camera_ids": ["2"],
+                "camera_ids": ["1"],
             },
         )
 
@@ -179,6 +178,50 @@ class TestApi(unittest.TestCase):
                 "start_ts": self.start_ts,
                 "end_ts": self.start_ts + 45,
                 "camera_ids": ["1"],
+            },
+        )
+
+    def test_three_cameras(self):
+        enter(self.start_ts, self.track_id, camera_id="2")
+        exit(self.start_ts + 30, self.track_id, camera_id="2")
+        enter(self.start_ts + 20, self.track_id, camera_id="3")
+        exit(self.start_ts + 45, self.track_id, camera_id="3")
+        enter(self.start_ts + 46, self.track_id, camera_id="5")
+        exit(self.start_ts + 50, self.track_id, camera_id="5")
+
+        resp = requests.get(API_URL + f"/timeline/{self.track_id}")
+        timeline = resp.json()
+        self.assertEqual(len(timeline), 4, timeline)
+        self.assertDictEqual(
+            timeline[0],
+            {
+                "start_ts": self.start_ts,
+                "end_ts": self.start_ts + 19,
+                "camera_ids": ["2"],
+            },
+        )
+        self.assertDictEqual(
+            timeline[1],
+            {
+                "start_ts": self.start_ts + 20,
+                "end_ts": self.start_ts + 30,
+                "camera_ids": ["2", "3"],
+            },
+        )
+        self.assertDictEqual(
+            timeline[2],
+            {
+                "start_ts": self.start_ts + 31,
+                "end_ts": self.start_ts + 45,
+                "camera_ids": ["3"],
+            },
+        )
+        self.assertDictEqual(
+            timeline[3],
+            {
+                "start_ts": self.start_ts + 46,
+                "end_ts": self.start_ts + 50,
+                "camera_ids": ["5"],
             },
         )
 

@@ -59,13 +59,16 @@ Your API must implement the following endpoints:
     ...
   ]
   ```
+  Each element of the list is a time interval (`start_ts <= time < end_ts + 1`) with the list of camera IDs that saw the person within that interval.
   As an example: the object `{start_ts: 10, end_ts: 20, camera_ids: ["5", "6"]}` tells us that the cameras 5 and 6 saw the person in the time interval `[10, 21)` (note that the end of the interval is 21 and not 20; this means the whole 20th second is included in the interval).
   Requirements:
+  * Your algorithm must be able to handle an arbitrary number of cameras (an actual store is expected to have tens to hundreds of cameras).
   * The list must be sorted by `start_ts`.
   * Time ranges must have no overlaps, i.e., if some entry has `end_ts=15`, the next entry must have `start_ts>=16`.
   * Entries with empty `camera_ids` must be removed from the list.
   * Adjacent entries (i.e., `res[i].end_ts + 1 == res[i + 1].start_ts`) with the same `camera_ids` must be joined.
-  * You should ignore exit events without the corresponding enter events and enter events without the exit events.
+  * If an exit event is missing (this might happen when the timeline is requested before the person left the camera's field of view), you should ignore the corresponding enter event.
+    * For simplicity, you may assume that there cannot be missing enter events.
 
 ### Example
 
